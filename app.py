@@ -21,9 +21,13 @@ emotions = ('angry', 'disgust', 'fear', 'happy', 'sad', 'surprise', 'neutral')
 
 emotion_counts = {'angry': 0, 'disgust': 0, 'fear': 0, 'happy': 0, 'sad': 0, 'surprise': 0, 'neutral': 0}
 
+# ----------------------------
+
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index.php')
+
+# ----------------------------
 
 @app.route('/predict', methods=['POST'])
 def predict():
@@ -33,13 +37,13 @@ def predict():
     img = cv2.imdecode(np_img, cv2.IMREAD_COLOR)
     
     gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    faces_detected = face_haar_cascade.detectMultiScale(gray_img, 1.32, 5)
+    faces_detected = face_haar_cascade.detectMultiScale(gray_img, scaleFactor=1.3, minNeighbors=5)
     
     if len(faces_detected) == 0:
         return jsonify({'emotion': 'No face detected'})
     
     x, y, w, h = faces_detected[0]
-    roi_gray = gray_img[y:y + w, x:x + h]
+    roi_gray = gray_img[y:y + h, x:x + w]  # Ensure correct ROI dimensions
     roi_gray = cv2.resize(roi_gray, (224, 224))
     img_pixels = image.img_to_array(roi_gray)
     img_pixels = np.expand_dims(img_pixels, axis=0)
@@ -52,26 +56,26 @@ def predict():
     # Update detected emotion counts
     emotion_counts[predicted_emotion] += 1
 
-    # Check if 20 facial expressions have been detected
+    # Check if 10 facial expressions have been detected
     if sum(emotion_counts.values()) == 20:
         highest_emotion = max(emotion_counts, key=emotion_counts.get)
-        if highest_emotion == 'happy':
-            webbrowser.open("https://youtu.be/I_Rx6A2uK7U?si=7Ud9vWT_WGEFH_r9") 
-        elif highest_emotion == 'angry':
-            webbrowser.open("https://youtu.be/I_Rx6A2uK7U?si=7Ud9vWT_WGEFH_r9")
-        elif highest_emotion == 'disgust':
-            webbrowser.open("https://youtu.be/I_Rx6A2uK7U?si=7Ud9vWT_WGEFH_r9")
-        elif highest_emotion == 'fear':
-            webbrowser.open("https://youtu.be/I_Rx6A2uK7U?si=7Ud9vWT_WGEFH_r9")
-        elif highest_emotion == 'sad':
-            webbrowser.open("https://youtu.be/I_Rx6A2uK7U?si=7Ud9vWT_WGEFH_r9")
-        elif highest_emotion == 'surprise':
-            webbrowser.open("https://youtu.be/I_Rx6A2uK7U?si=7Ud9vWT_WGEFH_r9")
-        elif highest_emotion == 'neutral':
-            webbrowser.open("https://youtu.be/I_Rx6A2uK7U?si=7Ud9vWT_WGEFH_r9")
+        if highest_emotion in ['happy', 'angry', 'sad', 'neutral']:
+            youtube_links = {
+                'happy': "https://www.youtube.com/watch?v=qcDvzifP_gk",
+                'angry': "https://www.youtube.com/watch?v=f1De87ETXwo",
+                'sad': "https://www.youtube.com/watch?v=oAVhUAaVCVQ",
+                'neutral': "https://youtu.be/I_Rx6A2uK7U?si=7Ud9vWT_WGEFH_r9"
+            }
+            webbrowser.open(youtube_links[highest_emotion])
         return jsonify({'emotion': predicted_emotion, 'done': True})
 
     return jsonify({'emotion': predicted_emotion, 'done': False})
+
+@app.route('/reset', methods=['POST'])
+def reset():
+    global emotion_counts
+    emotion_counts = {'angry': 0, 'disgust': 0, 'fear': 0, 'happy': 0, 'sad': 0, 'surprise': 0, 'neutral': 0}
+    return jsonify({'reset': True})
 
 if __name__ == "__main__":
     app.run(debug=True)
