@@ -1,3 +1,11 @@
+
+<?php
+session_start();
+include_once('connection.php');
+$_SESSION['name'];
+$_SESSION['username'];
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>

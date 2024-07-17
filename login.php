@@ -25,20 +25,18 @@ if (isset($_POST['login'])) {
 
     if (mysqli_num_rows($result) > 0) {
         $row = mysqli_fetch_array($result);
+        $id_user = $row['id'];
         $name = $row['name'];
         $username = $row['username'];
-        $password = $row['password'];
 
-        if ($username == $username && $password == $password) {
-            $_SESSION['name'] = $name;
-            $_SESSION['username'] = $username;
-            $_SESSION['password'] = $password;
-            header('location:index.php');
-        }
+        $_SESSION['id_user'] = $id_user;
+        $_SESSION['name'] = $name;
+        $_SESSION['username'] = $username;
+
+        header('location:index.php');
     } else {
         echo "<script>alert('Invalid Username or Password');</script>";
         echo "<script>window.location.href='auth.php';</script>";
         exit;
     }
 }
-
