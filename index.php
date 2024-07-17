@@ -8,6 +8,9 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
 </head>
 <body>
+    <div>
+    <a href="auth.php" class="btn">LOGOUT</a>
+    </div>
     <h1>Display Webcam Stream</h1>
     <div id="container">
         <video autoplay="true" id="videoElement"></video>
