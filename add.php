@@ -22,4 +22,4 @@ if (isset($_POST['register'])) {
         die(mysqli_error($conn));
     }
 }
-?>
+

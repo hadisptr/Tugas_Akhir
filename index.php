@@ -9,7 +9,10 @@
 </head>
 <body>
     <div>
-    <a href="auth.php" class="btn">LOGOUT</a>
+    <a href="auth.php" class="btn">LOGIN/LOGOUT</a>
+    </div>
+    <div>
+    <a href="setting.php" class="btn">Setting</a>
     </div>
     <h1>Display Webcam Stream</h1>
     <div id="container">
